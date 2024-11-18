@@ -45,6 +45,6 @@ resource "aws_iam_policy" "lambda_basic_execution_policy" {
 
 # Step 3: Attach the IAM Policy to the IAM Role
 resource "aws_iam_role_policy_attachment" "lambda_execution_policy_attachment" {
-  role       = aws_iam_role.lambda_execution_role.name
-  policy_arn = aws_iam_policy.lambda_basic_execution_policy.arn
+  role       = aws_iam_role.lambda_execution_role.name  # Correct role reference
+  policy_arn = aws_iam_policy.lambda_basic_execution_policy.arn  # Correct policy ARN reference
 }
