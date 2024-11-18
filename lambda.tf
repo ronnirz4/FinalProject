@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "validate_code" {
-  function_name    = "ValidateCode"
+  function_name    = "Ronn4ValidateCode"  # Change this to the new desired name
   role             = aws_iam_role.lambda_execution_role.arn  # Correct reference to the IAM role
   handler          = "validate_code.lambda_handler"  # Ensure this is correct for your Lambda function
   runtime          = "python3.9"
