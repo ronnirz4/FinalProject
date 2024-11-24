@@ -4,7 +4,7 @@ provider "aws" {
 
 # IAM Role for Step Functions
 resource "aws_iam_role" "step_function_role" {
-  name = "step_function_role"
+  name = "Ronn4Step_function_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -23,6 +23,7 @@ resource "aws_iam_role" "step_function_role" {
 # Attach Policies to Step Functions Role
 resource "aws_iam_role_policy" "step_function_policy" {
   role = aws_iam_role.step_function_role.id
+  name = "Ronn4Step_function_policy"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -43,7 +44,7 @@ resource "aws_iam_role_policy" "step_function_policy" {
 data "aws_iam_policy_document" "step_function" {
   statement {
     actions   = ["lambda:InvokeFunction"]
-    resources = ["*"] # Replace with ARNs of your Lambda functions
+    resources = ["arn:aws:lambda:us-east-2:023196572641:function:Ronn4ValidateCode"] # Replace with ARNs of your Lambda functions
   }
 }
 
@@ -58,22 +59,22 @@ resource "aws_sfn_state_machine" "pipeline_workflow" {
     States: {
       ValidateCode: {
         Type: "Task",
-        Resource: "arn:aws:lambda:us-east-1:123456789012:function:ValidateCode", # Replace with your Lambda ARN
+        Resource: "arn:aws:lambda:us-east-2:023196572641:function:Ronn4ValidateCode", # Replace with your Lambda ARN
         Next: "DeployToStaging"
       },
       DeployToStaging: {
         Type: "Task",
-        Resource: "arn:aws:lambda:us-east-1:123456789012:function:DeployToStaging", # Replace with your Lambda ARN
+        Resource: "arn:aws:lambda:us-east-2:023196572641:function:Ronn4DeployToStaging", # Replace with your Lambda ARN
         Next: "RunTests"
       },
       RunTests: {
         Type: "Task",
-        Resource: "arn:aws:lambda:us-east-1:123456789012:function:RunTests", # Replace with your Lambda ARN
+        Resource: "arn:aws:lambda:us-east-2:023196572641:function:Ronn4RunTests", # Replace with your Lambda ARN
         Next: "DeployToProduction"
       },
       DeployToProduction: {
         Type: "Task",
-        Resource: "arn:aws:lambda:us-east-1:123456789012:function:DeployToProduction", # Replace with your Lambda ARN
+        Resource: "arn:aws:lambda:us-east-2:023196572641:function:Ronn4DeployToProduction", # Replace with your Lambda ARN
         End: true
       }
     }
