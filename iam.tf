@@ -190,3 +190,26 @@ resource "aws_iam_role_policy_attachment" "codedeploy_s3_bucket_policy_attachmen
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = aws_iam_policy.codedeploy_s3_bucket_policy.arn
 }
+# Step 14: Attach the permission to create deployments in CodeDeploy to the CodeDeploy role
+resource "aws_iam_policy" "codedeploy_create_deployment_policy" {
+  name        = "ronn4_codedeploy_create_deployment_policy"
+  description = "Policy to allow creating deployments in CodeDeploy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "codedeploy:CreateDeployment"
+        Effect = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach the new policy to the CodeDeploy service role
+resource "aws_iam_role_policy_attachment" "codedeploy_create_deployment_policy_attachment" {
+  role       = aws_iam_role.codedeploy_service_role.name
+  policy_arn = aws_iam_policy.codedeploy_create_deployment_policy.arn
+}
+
