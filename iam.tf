@@ -73,13 +73,36 @@ resource "aws_iam_role_policy_attachment" "codedeploy_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"  # Predefined policy for CodeDeploy
 }
 
-# Step 6 (Optional): Attach the CloudWatch Logs Full Access Policy to the CodeDeploy Role (if needed for logging)
+# Step 6: Attach the Step Function Permissions to the CodeDeploy Role
+resource "aws_iam_policy" "codedeploy_step_function_policy" {
+  name        = "ronn4_codedeploy_step_function_policy"  # Policy for CodeDeploy to interact with Step Functions
+  description = "Policy for CodeDeploy to invoke Step Functions"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "states:StartExecution"
+        Effect   = "Allow"
+        Resource = "arn:aws:states:us-east-2:023196572641:stateMachine:ServerlessDeploymentWorkflow"  # Replace with your Step Function ARN
+      }
+    ]
+  })
+}
+
+# Step 7: Attach the Step Function Policy to the CodeDeploy Role
+resource "aws_iam_role_policy_attachment" "codedeploy_step_function_attachment" {
+  role       = aws_iam_role.codedeploy_service_role.name  # Correct role reference
+  policy_arn = aws_iam_policy.codedeploy_step_function_policy.arn  # Attach the Step Function policy
+}
+
+# Step 8 (Optional): Attach the CloudWatch Logs Full Access Policy to the CodeDeploy Role (if needed for logging)
 resource "aws_iam_role_policy_attachment" "codedeploy_logs_policy_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name  # Correct role reference
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"  # Full access to CloudWatch Logs
 }
 
-# Step 7 (Optional): Attach the ECS Role Policy if deploying to ECS via CodeDeploy
+# Step 9 (Optional): Attach the ECS Role Policy if deploying to ECS via CodeDeploy
 resource "aws_iam_role_policy_attachment" "ecs_codedeploy_policy_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name  # Correct role reference
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"  # Required for ECS deployments
