@@ -139,7 +139,7 @@ resource "aws_iam_role_policy_attachment" "ecs_codedeploy_policy_attachment" {
 resource "aws_s3_bucket_object" "codedeploy_revision" {
   bucket = "ronn4finaproject"  # Your S3 bucket name
   key    = "revision.zip"      # The key for your application revision
-  source = "/mnt/wsl/Ubuntu/home/ronn4/PycharmProjects/FinalProject/FinalProject/polybot/revision.zip"  # Correct WSL path to the file
+  source = "C:/Users/ronn4/PycharmProjects/FinalProject/FinalProject/polybot/revision.zip"  # Correct WSL path to the file
 
   # Optional: Set permissions if required
   acl = "private"
