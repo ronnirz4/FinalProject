@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-hpa
+  namespace: demoapp
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 50
+  #Automatically Adjust Pod Replicas: The HPA will monitor resource usage, like CPU,
+  #and automatically increase or decrease the number of Nginx pods to ensure the application remains
+  #responsive under varying load conditions.
+  #Efficient Resource Utilization: By scaling the number of pods based on demand, the HPA helps avoid over-provisioning resources,
+  #keeping resource usage cost-efficient.
+  #Ensure Application Availability: During high traffic periods, the HPA will scale up the Nginx deployment to handle more requests
+  #and scale down during low traffic, ensuring availability while minimizing resource wastage.

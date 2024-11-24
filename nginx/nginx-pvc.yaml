@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nginx-pv
+  namespace: demoapp  # Replace with your namespace if different
+spec:
+  capacity:
+    storage: 1Gi  # Size of the volume
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/nginx  # Path on the host where data will be stored
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc
+  namespace: demoapp  # Replace with your namespace if different
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  # Requesting 1Gi of storage
+
+
+#The nginx-pvc.yaml file defines a PersistentVolumeClaim (PVC) in Kubernetes. A PVC is used to request storage for your pods,
+#allowing data to persist across pod restarts. In the context of an Nginx deployment, this can be useful for storing things like website content, logs, or configuration files that need to persist even if the Nginx pod is recreated.
+#Key Use Cases of nginx-pvc.yaml:
+#Persistent Storage: Ensure that important data (such as website content or configurations) remains available even if the Nginx
+#pod is deleted or restarted.
+#Dynamic Volume Provisioning: Kubernetes can automatically provision the required storage based on the claim,
+#if your cluster is configured with a storage class that supports dynamic provisioning.
+#Sharing Data Across Pods: If multiple replicas of Nginx are running, they can share the same persistent volume,
+#allowing consistent data access across pods.

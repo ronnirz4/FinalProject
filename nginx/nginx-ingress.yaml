@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: demoapp
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: hello-world.example
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+
+
+
+
+#Route External Traffic to Services:
+#It directs external HTTP/HTTPS traffic to the appropriate Kubernetes services based on hostnames and paths.
+#TLS/SSL Termination: It can manage SSL certificates, providing HTTPS to your applications.
+#Path-Based Routing: You can define rules to route traffic to different services based on URL paths or subdomains.
+#Custom Domains: Use hostnames like example.com to route traffic to your services,
+#instead of relying on IP addresses and NodePort services.
