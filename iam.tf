@@ -141,7 +141,7 @@ resource "aws_s3_bucket_object" "codedeploy_revision" {
   key    = "revision.zip"      # The key for your application revision
   source = "C:/Users/ronn4/PycharmProjects/FinalProject/FinalProject/polybot/revision.zip"  # Correct WSL path to the file
 
-  # Optional: Set permissions if required
+   # Optional: Set permissions if required
   acl = "private"
 }
 
@@ -190,6 +190,7 @@ resource "aws_iam_role_policy_attachment" "codedeploy_s3_bucket_policy_attachmen
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = aws_iam_policy.codedeploy_s3_bucket_policy.arn
 }
+
 # Step 14: Attach the permission to create deployments in CodeDeploy to the CodeDeploy role
 resource "aws_iam_policy" "codedeploy_create_deployment_policy" {
   name        = "ronn4_codedeploy_create_deployment_policy"
@@ -213,3 +214,33 @@ resource "aws_iam_role_policy_attachment" "codedeploy_create_deployment_policy_a
   policy_arn = aws_iam_policy.codedeploy_create_deployment_policy.arn
 }
 
+# Step 15: Add a Rollback Lambda IAM Policy
+resource "aws_iam_policy" "rollback_lambda_policy" {
+  name        = "ronn4_rollback_lambda_policy"
+  description = "Policy to allow Lambda function to perform rollback operations during deployment failures"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "lambda:InvokeFunction",
+          "lambda:UpdateFunctionCode",
+          "lambda:UpdateFunctionConfiguration"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:lambda:us-east-2:023196572641:function:*"  # Replace with your Lambda function ARN
+      },
+      {
+        Action = "codedeploy:RollbackDeployment"
+        Effect   = "Allow"
+        Resource = "arn:aws:codedeploy:us-east-2:023196572641:deploymentGroup:*"  # Replace with your deployment group ARN
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rollback_lambda_policy_attachment" {
+  role       = aws_iam_role.codedeploy_service_role.name
+  policy_arn = aws_iam_policy.rollback_lambda_policy.arn
+}
