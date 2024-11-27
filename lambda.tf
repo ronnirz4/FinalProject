@@ -8,7 +8,4 @@ resource "aws_lambda_function" "validate_code" {
   source_code_hash = filebase64sha256("validate_code.zip")  # Hash of the ZIP file
 }
 
-# Output the ARN of the Lambda function if needed
-output "validate_code_lambda_arn" {
-  value = aws_lambda_function.validate_code.arn
-}
+# If you need additional Lambda functions like DeployToStaging, RunTests, etc., repeat the above Lambda function block.
