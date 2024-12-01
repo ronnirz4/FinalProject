@@ -135,16 +135,6 @@ resource "aws_iam_role_policy_attachment" "ecs_codedeploy_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
 
-# Step 10: Create the S3 bucket deployment for CodeDeploy to store application revisions
-resource "aws_s3_bucket_object" "codedeploy_revision" {
-  bucket = "ronn4finaproject"  # Your S3 bucket name
-  key    = "revision.zip"      # The key for your application revision
-  source = "C:/Users/ronn4/PycharmProjects/FinalProject/FinalProject/polybot/revision.zip"  # Correct WSL path to the file
-
-  #Optional: Set permissions if required
-  acl = "private"
-}
-
 # Step 11: Create the CodeDeploy application for deployment
 resource "aws_codedeploy_app" "codedeploy_app" {
   name = "ronn4_codedeploy_app"
