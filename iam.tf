@@ -204,37 +204,37 @@ resource "aws_iam_role_policy_attachment" "codedeploy_create_deployment_policy_a
   policy_arn = aws_iam_policy.codedeploy_create_deployment_policy.arn
 }
 
-# Lambda function for deployment to staging (no changes)
-resource "aws_lambda_function" "deploy_to_staging" {
-  function_name = "Ronn4DeployToStaging"
+# # Lambda function for deployment to staging (no changes)
+# resource "aws_lambda_function" "deploy_to_staging" {
+#   function_name = "Ronn4DeployToStaging"
+#
+#   role = aws_iam_role.lambda_execution_role.arn  # Attach the role for deployment
+#
+#   handler = "index.lambda_handler"
+#   runtime = "python3.8"
+#
+#   environment {
+#     variables = {
+#       DEPLOYMENT_BUCKET = "your-s3-bucket"
+#     }
+#   }
+# }
 
-  role = aws_iam_role.lambda_execution_role.arn  # Attach the role for deployment
-
-  handler = "index.lambda_handler"
-  runtime = "python3.8"
-
-  environment {
-    variables = {
-      DEPLOYMENT_BUCKET = "your-s3-bucket"
-    }
-  }
-}
-
-# Lambda function for deployment to production (no changes)
-resource "aws_lambda_function" "deploy_to_production" {
-  function_name = "Ronn4DeployToProduction"
-
-  role = aws_iam_role.lambda_execution_role.arn  # Attach the role for deployment
-
-  handler = "index.lambda_handler"
-  runtime = "python3.8"
-
-  environment {
-    variables = {
-      DEPLOYMENT_BUCKET = "your-s3-bucket"
-    }
-  }
-}
+# # Lambda function for deployment to production (no changes)
+# resource "aws_lambda_function" "deploy_to_production" {
+#   function_name = "Ronn4DeployToProduction"
+#
+#   role = aws_iam_role.lambda_execution_role.arn  # Attach the role for deployment
+#
+#   handler = "index.lambda_handler"
+#   runtime = "python3.8"
+#
+#   environment {
+#     variables = {
+#       DEPLOYMENT_BUCKET = "your-s3-bucket"
+#     }
+#   }
+# }
 
 # Step 15: Create S3 bucket for production
 resource "aws_s3_bucket" "production_bucket" {
