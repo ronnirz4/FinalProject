@@ -215,7 +215,7 @@ resource "aws_lambda_function" "deploy_to_staging" {
 
   environment {
     variables = {
-      DEPLOYMENT_BUCKET = "your-s3-bucket"
+      DEPLOYMENT_BUCKET = "ronn4-staging-bucket"
     }
   }
 }
@@ -231,7 +231,7 @@ resource "aws_lambda_function" "deploy_to_production" {
 
   environment {
     variables = {
-      DEPLOYMENT_BUCKET = "your-s3-bucket"
+      DEPLOYMENT_BUCKET = "ronn4-production-bucket"
     }
   }
 }
