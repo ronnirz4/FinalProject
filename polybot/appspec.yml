@@ -1,8 +1,10 @@
 version: 0.0
-os: linux
-files:
-  - source: /path/to/source/
-    destination: /path/to/destination/
+Resources:
+  - myLambdaFunction:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: Ronn4ValidateCode  # Replace with your Lambda function's name
+        Alias: staging                  # Replace with the alias you want to deploy to
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies.sh
