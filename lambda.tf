@@ -1,44 +1,84 @@
-resource "aws_lambda_function" "validate_code" {
-  function_name    = "Ronn4ValidateCode"  # Name of the Lambda function
-  role             = aws_iam_role.lambda_execution_role.arn  # Reference the role from iam.tf
-  handler          = "validate_code.lambda_handler"  # Entry point of the Lambda function
-  runtime          = "python3.9"  # Python runtime version
-
-  # Specify the S3 bucket and key for the Lambda code
-  s3_bucket        = "ronn4finaproject"  # The name of the S3 bucket
-  s3_key           = "Ronn4ValidateCode"      # The path to the .zip file in the S3 bucket
+provider "aws" {
+  region = "us-east-2"  # Replace with your desired region
 }
 
-resource "aws_lambda_function" "deploy_to_staging" {
+resource "aws_lambda_function" "Ronn4ValidateCode" {
+  function_name = "Ronn4ValidateCode"
+  role          = aws_iam_role.lambda_execution_role.arn
+  handler       = "index.validateCode"  # Replace with the handler function in your code
+  runtime       = "nodejs14.x"          # Adjust runtime based on your Lambda code
+  timeout       = 300                   # Timeout in seconds
+
+  # Do not use filename here, as you are uploading manually
+  source_code_hash = ""  # Empty because code is uploaded manually
+}
+
+resource "aws_lambda_function" "Ronn4DeployToStaging" {
   function_name = "Ronn4DeployToStaging"
   role          = aws_iam_role.lambda_execution_role.arn
-  handler       = "index.lambda_handler"
-  runtime       = "python3.9"
+  handler       = "index.deployToStaging"
+  runtime       = "nodejs14.x"
+  timeout       = 300
 
-  # Specify the S3 bucket and key for the Lambda code
-  s3_bucket     = "ronn4-lambda-bucket"  # The name of the S3 bucket
-  s3_key        = "staging_lambda_code.zip"  # The path to the .zip file in the S3 bucket
-
-  environment {
-    variables = {
-      DEPLOYMENT_BUCKET = "ronn4-staging-bucket"
-    }
-  }
+  source_code_hash = ""  # Empty because code is uploaded manually
 }
 
-resource "aws_lambda_function" "deploy_to_production" {
+resource "aws_lambda_function" "Ronn4RunTests" {
+  function_name = "Ronn4RunTests"
+  role          = aws_iam_role.lambda_execution_role.arn
+  handler       = "index.runTests"
+  runtime       = "nodejs14.x"
+  timeout       = 300
+
+  source_code_hash = ""  # Empty because code is uploaded manually
+}
+
+resource "aws_lambda_function" "Ronn4DeployToProduction" {
   function_name = "Ronn4DeployToProduction"
   role          = aws_iam_role.lambda_execution_role.arn
-  handler       = "index.lambda_handler"
-  runtime       = "python3.9"
+  handler       = "index.deployToProduction"
+  runtime       = "nodejs14.x"
+  timeout       = 300
 
-  # Specify the S3 bucket and key for the Lambda code
-  s3_bucket     = "ronn4-lambda-bucket"  # The name of the S3 bucket
-  s3_key        = "production_lambda_code.zip"  # The path to the .zip file in the S3 bucket
+  source_code_hash = ""  # Empty because code is uploaded manually
+}
 
-  environment {
-    variables = {
-      DEPLOYMENT_BUCKET = "ronn4-production-bucket"
-    }
-  }
+# IAM Role for Lambda execution (same as before)
+resource "aws_iam_role" "lambda_execution_role" {
+  name = "lambda_execution_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Attach the necessary permissions to the IAM role (same as before)
+resource "aws_iam_role_policy" "lambda_policy" {
+  name = "lambda_policy"
+  role = aws_iam_role.lambda_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:*",
+          "s3:*",  # Example of a service the Lambda might interact with
+          "codecommit:GitPull",  # Example of another AWS service the Lambda might need access to
+          "ecs:DescribeServices"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
 }
